@@ -1,5 +1,4 @@
 import React, { PureComponent } from "react";
-import { compose } from "recompose";
 // import withForm from "./withForm";
 
 //  https://www.robinwieruch.de/gentle-introduction-higher-order-components/
@@ -31,51 +30,28 @@ import { compose } from "recompose";
 
 /// TODOS Example ///
 
-const withCondition = (
-  condition,
-  OtherComponent = () => null
-) => WrappedComponent => props =>
-  condition(props) ? <OtherComponent /> : <WrappedComponent {...props} />;
-
-const TodoList = ({ todos }) =>
-  <div>
-    {todos.map(todo =>
-      <div key={todo.id}>
-        {todo.title}
-      </div>
-    )}
-  </div>;
-
-const withConditionalRendering = compose(
-  // first it loads
-  withCondition(
-    props => {
-      console.log(props.isLoading);
-      return props.isLoading;
-    },
-    () => <div> Loading... </div>
-  ),
-  // it would be null till it loads
-  withCondition(props => props.todos === undefined),
-  // it could be empty
-  withCondition(
-    props => props.todos.length === 0,
-    () => <div>You have no Todos</div>
-  )
-);
-
-const EnhancedTodoList = withConditionalRendering(TodoList);
+const TodoList = ({ todos }) => {
+  if (!todos) return null;
+  return (
+    <div>
+      {todos.map(todo =>
+        <div key={todo.id}>
+          {todo.title}
+        </div>
+      )}
+    </div>
+  );
+};
 
 class App extends PureComponent {
   state = {};
 
   async componentDidMount() {
-    this.setState({ isLoading: true });
     const todos = await fetch(
       `https://jsonplaceholder.typicode.com/todos`
     ).then(r => r.json());
 
-    this.setState({ todos, isLoading: false });
+    this.setState({ todos });
   }
   render() {
     return (
@@ -83,10 +59,7 @@ class App extends PureComponent {
         {/* <h1> SIMPLE FORM </h1>
         <EnhancedForm /> */}
 
-        <EnhancedTodoList
-          isLoading={this.state.isLoading}
-          todos={this.state.todos}
-        />
+        <TodoList todos={this.state.todos} />
       </div>
     );
   }

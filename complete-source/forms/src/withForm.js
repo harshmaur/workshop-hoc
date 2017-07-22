@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 const withForm = apiObject => WrappedComponent =>
   class extends Component {
-    state = {};
+    state = apiObject.defaultValues;
 
     handleInput = e => {
       this.setState({ [e.target.name]: e.target.value });

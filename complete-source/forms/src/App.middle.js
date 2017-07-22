@@ -31,11 +31,16 @@ import { compose } from "recompose";
 
 /// TODOS Example ///
 
-const withCondition = (
-  condition,
-  OtherComponent = () => null
-) => WrappedComponent => props =>
-  condition(props) ? <OtherComponent /> : <WrappedComponent {...props} />;
+const withTodosNull = WrappedComponent => props =>
+  props.todos ? <WrappedComponent {...props} /> : null;
+
+const withTodosLoading = WrappedComponent => ({ isLoading, ...props }) =>
+  isLoading ? <div>Loading...</div> : <WrappedComponent {...props} />;
+
+const withTodosEmpty = WrappedComponent => ({ isEmpty, ...props }) =>
+  isEmpty
+    ? <div> You do not have any todos</div>
+    : <WrappedComponent {...props} />;
 
 const TodoList = ({ todos }) =>
   <div>
@@ -47,21 +52,9 @@ const TodoList = ({ todos }) =>
   </div>;
 
 const withConditionalRendering = compose(
-  // first it loads
-  withCondition(
-    props => {
-      console.log(props.isLoading);
-      return props.isLoading;
-    },
-    () => <div> Loading... </div>
-  ),
-  // it would be null till it loads
-  withCondition(props => props.todos === undefined),
-  // it could be empty
-  withCondition(
-    props => props.todos.length === 0,
-    () => <div>You have no Todos</div>
-  )
+  withTodosEmpty,
+  withTodosLoading,
+  withTodosNull
 );
 
 const EnhancedTodoList = withConditionalRendering(TodoList);
@@ -86,6 +79,7 @@ class App extends PureComponent {
         <EnhancedTodoList
           isLoading={this.state.isLoading}
           todos={this.state.todos}
+          isEmpty={this.state.todos && this.state.todos.length === 0}
         />
       </div>
     );

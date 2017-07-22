@@ -1,0 +1,15 @@
+1. Create todos component
+2. What happens when todos are null (Ex. on page load) (A. You return null)
+3. What happens if you dont have any todos at all  (A. You return an empty component saying there are no todos)
+4. What happens if the todos havent are still loading? (A. Display a loading message/component)
+5. Such use cases are present in every application. 
+6. Create a withTodosNull HOC & Remove the null condition from the todoslist comp
+7. create a loading HOC & generalise the loading message component it for any other component
+8. Also remove that extra isLoading from passing it down to the props
+9. Create withTodosEmpty
+10. use recompose and refactor.
+11. Explain reusability
+12. Refactor withTodosNull to withNull(Component, nullFunc)
+13. Explain why this pattern is bad when composing and explain Component => Component Signature.
+14. Refactor All. 
+15. Order of the compose method is very important!! 
